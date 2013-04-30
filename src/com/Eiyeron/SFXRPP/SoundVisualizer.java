@@ -9,6 +9,12 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+/**
+  * SoundVizualizer shows the volume spectrum of the given sound. Used in RSFSR++ Soundbox.
+  * @author Eiyeron / Florian DORMONT
+  * @version 1.00 | Finished
+**/
+
 @SuppressWarnings("serial")
 public class SoundVisualizer extends JPanel {
 	private ArrayList<Double> histogram;
