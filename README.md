@@ -21,10 +21,10 @@ Features
 To Do
 -----
 
-- [ ] Put down the soure
-- [ ] Comment the source
-- [ ] Finish the I/O system
-- [ ] Clean and encapsulate the code to make it modular and easily usable.
+- [ X ] Put down the soure
+- [   ] Comment the source
+- [   ] Finish the I/O system
+- [   ] Clean and encapsulate the code to make it modular and easily usable.
 
 License
 -------
