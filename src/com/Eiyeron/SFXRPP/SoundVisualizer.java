@@ -9,8 +9,6 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.springworldgames.SFXR.SFXRData;
-
 @SuppressWarnings("serial")
 public class SoundVisualizer extends JPanel {
 	private ArrayList<Double> histogram;
