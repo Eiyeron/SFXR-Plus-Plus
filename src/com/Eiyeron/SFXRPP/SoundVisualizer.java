@@ -3,11 +3,15 @@ package com.Eiyeron.SFXRPP;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import com.Eiyeron.SFXRPP.SFXREngine.FX;
+import com.Eiyeron.SFXRPP.SFXREngine.SFXRSound;
 
 /**
   * SoundVizualizer shows the volume spectrum of the given sound. Used in RSFSR++ Soundbox.
@@ -19,13 +23,11 @@ import javax.swing.JPanel;
 public class SoundVisualizer extends JPanel {
 	private ArrayList<Double> histogram;
 	
-	public void updateHistogram(SFXRData sound) {
+	public void updateHistogram(SFXRSound sound) {
 		histogram.clear();
-		sound.resetSample(false);
-		for(int i = 0; i < sound.getLength(); ++i) {
-			histogram.add(sound.synthSample());
+		for(int i = 0; i < sound.getPcm().length; ++i) {
+			histogram.add(sound.getPcm_double()[i]);
 		}
-		sound.resetSample(false);
 	}
 	
 	/* (non-Javadoc)
@@ -51,15 +53,15 @@ public class SoundVisualizer extends JPanel {
 		histogram = new ArrayList<Double>();
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		JFrame fen = new JFrame();
 		SoundVisualizer snd = new SoundVisualizer();
 		Random rand = new Random();
-		SFXRData sound = new SFXRData(rand.nextInt());
-		sound.randomize();
+		SFXRSound sound = SFXRSound.SFXRSoundByPresets(FX.values()[rand.nextInt(FX.values().length)]);
 
 		snd.updateHistogram(sound);
 		sound.play();
+		SFXRSound.writeToWav(sound, "/home/d12003702/", "Test");
 		
 		fen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fen.add(snd);

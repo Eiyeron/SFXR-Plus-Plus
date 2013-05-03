@@ -24,6 +24,11 @@ import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 
+import com.Eiyeron.SFXRPP.SFXREngine.FX;
+import com.Eiyeron.SFXRPP.SFXREngine.SFXRPreset;
+import com.Eiyeron.SFXRPP.SFXREngine.SFXRSynth;
+import com.Eiyeron.SFXRPP.SFXREngine.WaveForm;
+
 public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 
 	/**
@@ -33,7 +38,8 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 
 	public static SFXRpp main;
 	Random rand;
-	SFXRData sound;
+	SFXRPreset sound;
+	SFXRSynth synth;
 
 	JSlider sliders[];
 	JLabel label[];
@@ -221,7 +227,8 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 	}
 
 	public void updateVis() {
-		soundVis.updateHistogram(sound);
+		SFXRSynth syn = new SFXRSynth(sound);
+		soundVis.updateHistogram(syn.synthSound());
 		soundVis.repaint();
 	}
 
@@ -231,7 +238,7 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		rand = new Random();
-		sound = new SFXRData(rand.nextInt());
+		sound = new SFXRPreset(FX.BEEP);
 		sound.randomize();
 		sliders = new JSlider[fieldsName.length - 1];
 		label = new JLabel[fieldsName.length - 1];
@@ -296,7 +303,6 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 
 	public void doSound() {
 			sound.resetParams();
-			sound.resetSample(false);
 			sound.wave_type = (WaveForm) waveForm.getValue();
 			sound.p_base_freq = sliders[0].getValue() / (float) sliderPrecision;
 
@@ -343,6 +349,7 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 
 			sound.master_vol = volume.getValue() / (float) sliderPrecision;
 
+			
 			sound.play();
 
 	}

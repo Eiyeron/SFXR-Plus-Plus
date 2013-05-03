@@ -1,4 +1,4 @@
-MiGLayout Licence
+MiGLayout License
 =================
 
                                  Apache License
