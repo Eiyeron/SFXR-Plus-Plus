@@ -38,9 +38,9 @@ public class SoundVisualizer extends JPanel {
 			int ecart =  histogram.size() / getWidth();
 			for(int i = 0; i < getWidth(); i++) {
 				float x =((float)i*ecart / (float)histogram.size()) *getWidth(); 
-				double y = histogram.get(i*ecart) * getHeight();
+				double y = histogram.get(i*ecart)*getHeight();
 				g.setColor(Color.red);
-				g.fillRect((int)x , getHeight() / 2, 1, (int)y);
+				g.fillRect((int)x , getHeight() / 2 - (int)(y/2), 2, (int)y);
 			}			
 		}
 	}

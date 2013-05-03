@@ -1,4 +1,5 @@
 package com.Eiyeron.SFXRPP;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +31,7 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 	 */
 	private static final long serialVersionUID = 4648172894076113183L;
 
+	public static SFXRpp main;
 	Random rand;
 	SFXRData sound;
 
@@ -44,13 +46,14 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 	JButton mutate;
 	JButton open;
 	JButton save;
+	JButton about;
 
 	JButton[] options;
 
 	JSpinner waveForm;
 	JPanel slidersContainer;
 	JPanel presetsContainer;
-	
+
 	SoundVisualizer soundVis;
 
 	final int sliderPrecision = 10000;
@@ -78,22 +81,26 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 		save = new JButton("Save");
 		save.addActionListener(this);
 
-		getContentPane().add(play, "growx");
+		about = new JButton("About");
+		about.addActionListener(this);
+
+		getContentPane().add(play, "center, growx, gap unrelated");
 		getContentPane().add(random, "split 2, center");
-		getContentPane().add(mutate);
+		getContentPane().add(mutate, "gap unrelated");
 		getContentPane().add(open, "split 2, center");
-		getContentPane().add(save, "wrap");
+		getContentPane().add(save, "gap unrelated");
+		getContentPane().add(about, "wrap");
 	}
 
-	public void initPresets() {
+	public void initLeftDock() {
 		presetsContainer = new JPanel(new MigLayout());
 		options = new JButton[FX.values().length];
+
 		for (int i = 0; i < options.length; i++) {
 			options[i] = new JButton(FX.values()[i].toString());
 			options[i].addActionListener(this);
 			presetsContainer.add(options[i], "center, wrap, growx");
 		}
-
 		getContentPane().add(presetsContainer, "west, growy");
 	}
 
@@ -116,7 +123,7 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 
 			sliders[i].setPaintTicks(true);
 			sliders[i].setMajorTickSpacing(sliderPrecision / 2);
-
+			sliders[i].addChangeListener(this);
 			slidersContainer.add(label[i]);
 			slidersContainer.add(sliders[i], "growx");
 
@@ -135,11 +142,8 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 
 	public void initWin() {
 		getContentPane().setLayout(new MigLayout("center, fill"));
-		soundVis = new SoundVisualizer();
-		getContentPane().add(soundVis, "south");
-
 		initTopButtons();
-		initPresets();
+		initLeftDock();
 
 		getContentPane().add(new JLabel("Wave Form"), "center");
 
@@ -147,8 +151,8 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 		getContentPane().add(waveForm, "span, growx, wrap");
 
 		volume = new JSlider(0, sliderPrecision);
-		volumeVal = new JLabel();
 		volume.addChangeListener(this);
+		volumeVal = new JLabel();
 
 		getContentPane().add(new JLabel("Master Volume"));
 		getContentPane().add(volume, "growx");
@@ -164,8 +168,11 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 		JScrollPane slidersC = new JScrollPane(slidersContainer,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		getContentPane().add(slidersC, "growx, span, wrap");
-		
+		getContentPane().add(slidersC, "growx, span, wrap, center");
+
+		soundVis = new SoundVisualizer();
+		getContentPane().add(soundVis, "dock south, growx, span");
+
 	}
 
 	public void updateOptions() {
@@ -217,7 +224,7 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 		soundVis.updateHistogram(sound);
 		soundVis.repaint();
 	}
-	
+
 	public SFXRpp() {
 		this.setTitle("SFXR++ Soundbox");
 		this.setResizable(true);
@@ -248,11 +255,10 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 		} catch (Exception e) {
 		}
 
-		if(composant == "Play") {
+		if (composant == "Play") {
 			updateVis();
 			doSound();
-		}
-		else if (composant == "Random") {
+		} else if (composant == "Random") {
 			sound.randomize();
 			updateOptions();
 			updateVis();
@@ -284,55 +290,61 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 		} else if (preset != null) {
 			sound.random(preset);
 			updateOptions();
-			doSound();	
-			updateVis();			
+			updateVis();
 		}
 	}
 
 	public void doSound() {
-		sound.resetParams();
-		sound.resetSample(false);
-		sound.wave_type = (WaveForm) waveForm.getValue();
-		sound.p_base_freq = sliders[0].getValue() / (float) sliderPrecision;
+			sound.resetParams();
+			sound.resetSample(false);
+			sound.wave_type = (WaveForm) waveForm.getValue();
+			sound.p_base_freq = sliders[0].getValue() / (float) sliderPrecision;
 
-		sound.p_freq_ramp = sliders[1].getValue()
-				/ (float) (sliderPrecision / 2);
-		sound.p_freq_dramp = sliders[2].getValue()
-				/ (float) (sliderPrecision / 2);
-		sound.p_duty = sliders[3].getValue() / (float) sliderPrecision;
-		sound.p_duty_ramp = sliders[4].getValue()
-				/ (float) (sliderPrecision / 2);
+			sound.p_freq_ramp = sliders[1].getValue()
+					/ (float) (sliderPrecision / 2);
+			sound.p_freq_dramp = sliders[2].getValue()
+					/ (float) (sliderPrecision / 2);
+			sound.p_duty = sliders[3].getValue() / (float) sliderPrecision;
+			sound.p_duty_ramp = sliders[4].getValue()
+					/ (float) (sliderPrecision / 2);
 
-		sound.p_vib_strength = sliders[5].getValue() / (float) sliderPrecision;
-		sound.p_vib_speed = sliders[6].getValue() / (float) sliderPrecision;
+			sound.p_vib_strength = sliders[5].getValue()
+					/ (float) sliderPrecision;
+			sound.p_vib_speed = sliders[6].getValue() / (float) sliderPrecision;
 
-		sound.p_env_attack = sliders[7].getValue() / (float) sliderPrecision;
-		sound.p_env_sustain = sliders[8].getValue() / (float) sliderPrecision;
-		sound.p_env_decay = sliders[9].getValue() / (float) sliderPrecision;
-		sound.p_env_punch = sliders[10].getValue() / (float) sliderPrecision;
+			sound.p_env_attack = sliders[7].getValue()
+					/ (float) sliderPrecision;
+			sound.p_env_sustain = sliders[8].getValue()
+					/ (float) sliderPrecision;
+			sound.p_env_decay = sliders[9].getValue() / (float) sliderPrecision;
+			sound.p_env_punch = sliders[10].getValue()
+					/ (float) sliderPrecision;
 
-		sound.p_lpf_resonance = sliders[11].getValue()
-				/ (float) sliderPrecision;
-		sound.p_lpf_freq = sliders[12].getValue() / (float) sliderPrecision;
-		sound.p_lpf_ramp = sliders[13].getValue()
-				/ (float) (sliderPrecision / 2);
-		sound.p_hpf_freq = sliders[14].getValue() / (float) sliderPrecision;
-		sound.p_hpf_ramp = sliders[15].getValue()
-				/ (float) (sliderPrecision / 2);
+			sound.p_lpf_resonance = sliders[11].getValue()
+					/ (float) sliderPrecision;
+			sound.p_lpf_freq = sliders[12].getValue() / (float) sliderPrecision;
+			sound.p_lpf_ramp = sliders[13].getValue()
+					/ (float) (sliderPrecision / 2);
+			sound.p_hpf_freq = sliders[14].getValue() / (float) sliderPrecision;
+			sound.p_hpf_ramp = sliders[15].getValue()
+					/ (float) (sliderPrecision / 2);
 
-		sound.p_pha_offset = sliders[16].getValue()
-				/ (float) (sliderPrecision / 2);
-		sound.p_pha_ramp = sliders[17].getValue()
-				/ (float) (sliderPrecision / 2);
+			sound.p_pha_offset = sliders[16].getValue()
+					/ (float) (sliderPrecision / 2);
+			sound.p_pha_ramp = sliders[17].getValue()
+					/ (float) (sliderPrecision / 2);
 
-		sound.p_repeat_speed = sliders[18].getValue() / (float) sliderPrecision;
+			sound.p_repeat_speed = sliders[18].getValue()
+					/ (float) sliderPrecision;
 
-		sound.p_arp_mod = sliders[19].getValue() / (float) sliderPrecision;
-		sound.p_arp_speed = sliders[20].getValue() / (float) sliderPrecision;
+			sound.p_arp_mod = sliders[19].getValue() / (float) sliderPrecision;
+			sound.p_arp_speed = sliders[20].getValue()
+					/ (float) sliderPrecision;
 
-		sound.master_vol = volume.getValue() / (float) sliderPrecision;
+			sound.master_vol = volume.getValue() / (float) sliderPrecision;
 
-		sound.play();
+			sound.play();
+
 	}
 
 	public static void main(String args[]) {
@@ -350,8 +362,7 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
-		SFXRpp main = new SFXRpp();
-		System.out.println(main.getName());
+		main = new SFXRpp();
 
 	}
 

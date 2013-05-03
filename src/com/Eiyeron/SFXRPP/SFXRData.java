@@ -661,8 +661,7 @@ public class SFXRData {
 					line.close();
 
 				} catch (LineUnavailableException e) {
-					System.out.println("Sound Error : ");
-					e.printStackTrace();
+					System.err.println("Audio Error:\n\t" + e.getMessage() + "\nExiting.");
 				}
 			}
 		}).start();
