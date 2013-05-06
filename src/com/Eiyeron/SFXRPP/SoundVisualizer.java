@@ -14,8 +14,8 @@ import com.Eiyeron.SFXRPP.SFXREngine.FX;
 import com.Eiyeron.SFXRPP.SFXREngine.SFXRSound;
 
 /**
-  * SoundVizualizer shows the volume spectrum of the given sound. Used in RSFSR++ Soundbox.
-  * @author Eiyeron / Florian DORMONT
+  * SoundVizualizer shows the volume spectrum of the given sound. Used in SFSR++ Soundbox.
+  * @author Eiyeron
   * @version 1.00 | Finished
 **/
 

@@ -2,6 +2,11 @@ package com.Eiyeron.SFXRPP.SFXREngine;
 
 import java.util.Random;
 
+/**
+ * @author Eiyeron
+ * @version 1.00 | Finished
+ *	SFXRSynth is the SFXR++ Sound Synth. It's used to generate sound from presets and give SFXRSound as results.
+ */
 public class SFXRSynth {
 
 	private SFXRPreset snd;
@@ -42,8 +47,11 @@ public class SFXRSynth {
 	private int arp_limit;
 	private double arp_mod;
 
-	public Random rnd;
+	private Random rnd;
 
+	/**
+	 * @param snd Sound to synth. don't synth directly.
+	 */
 	public SFXRSynth(SFXRPreset snd) {
 		this.snd = snd;
 		rnd = new Random(snd.seed);
@@ -292,6 +300,9 @@ public class SFXRSynth {
 		// }
 	}
 
+	/**
+	 * @return SFXRSound of the SFXRPreset given
+	 */
 	public SFXRSound synthSound() {
 		int length = this.env_length[0] + this.env_length[1] + this.env_length[2];
 		byte[] barray = new byte[length];
@@ -303,8 +314,5 @@ public class SFXRSynth {
 			darray[i] = synth;
 		}
 		return new SFXRSound(barray, 44100);
-	}
-	public int getLength() {
-		return env_length[0] + env_length[1] + env_length[2];
 	}
 }

@@ -29,11 +29,13 @@ import com.Eiyeron.SFXRPP.SFXREngine.SFXRPreset;
 import com.Eiyeron.SFXRPP.SFXREngine.SFXRSynth;
 import com.Eiyeron.SFXRPP.SFXREngine.WaveForm;
 
+/**
+ * @author Eiyeron
+ * SFXR++ SoundBox
+ * @version 1.00 | Finished
+ */
 public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4648172894076113183L;
 
 	public static SFXRpp main;
