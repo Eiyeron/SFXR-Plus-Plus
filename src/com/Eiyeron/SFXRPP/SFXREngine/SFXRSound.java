@@ -106,7 +106,7 @@ public class SFXRSound {
 	}
 
 	/**
-	 * @param pcm Sound's double array
+	 * @param pcm_double Sound's double array
 	 */
 	public void setPcm_double(double[] pcm_double) {
 		this.pcm_double = pcm_double;
