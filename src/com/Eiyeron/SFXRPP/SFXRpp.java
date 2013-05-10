@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +23,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -31,8 +33,7 @@ import com.Eiyeron.SFXRPP.SFXREngine.SFXRSynth;
 import com.Eiyeron.SFXRPP.SFXREngine.WaveForm;
 
 /**
- * @author Eiyeron
- * SFXR++ SoundBox
+ * @author Eiyeron SFXR++ SoundBox
  * @version 1.00 | Finished
  */
 public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
@@ -276,45 +277,63 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 
 		} else if (composant == "Mutate") {
 			sound.mutate();
+			updateOptions();
 			updateVis();
 			doSound();
 
 		} else if (composant == "Save") {
 			System.out.println("Saving");
-			FileWriter fw;
-			try {
-				fw = new FileWriter(new File("saved.sfp"));
-				WaveForm wf = (WaveForm) (waveForm.getValue());
-				fw.write(wf.ordinal());
-				for (JSlider js : sliders) {
-					fw.write(sliderPrecision - js.getValue());
-					System.out.println(js.getValue());
-				}
-				fw.flush();
-				fw.close();
+			JFileChooser fc = new JFileChooser();
+			fc.addChoosableFileFilter(new SFPFileChooser());
+			int returnVal = fc.showOpenDialog(this);
 
-			} catch (IOException e) {
-				System.err.println("Saving Error");
-				e.printStackTrace();
-			}
-		} else if(composant == "Open") {
-			System.out.println("Opening");
-			FileReader fr;
-			try {
-				fr = new FileReader("saved.sfp");
-				waveForm.setValue(WaveForm.values()[fr.read()]);
-				for (JSlider js : sliders) {
-					int value = - fr.read() + sliderPrecision;
-					js.setValue(value);
-					System.out.println(value);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				String filePath = file.getPath();
+				if(!filePath.toLowerCase().endsWith(".sfp"))
+				{
+				    file = new File(filePath + ".sfp");
 				}
-				fr.close();
-			} catch (IOException e) {
-				System.err.println("Opening Error");
-				e.printStackTrace();
+				FileWriter fw;
+				try {
+					fw = new FileWriter(file);
+					WaveForm wf = (WaveForm) (waveForm.getValue());
+					fw.write(wf.ordinal());
+					for (JSlider js : sliders) {
+						fw.write(sliderPrecision - js.getValue());
+						System.out.println(js.getValue());
+					}
+					fw.flush();
+					fw.close();
+
+				} catch (IOException e) {
+					System.err.println("Saving Error");
+					e.printStackTrace();
+				}
 			}
-		}
-		else if (preset != null) {
+		} else if (composant == "Open") {
+			JFileChooser fc = new JFileChooser();
+			fc.addChoosableFileFilter(new SFPFileChooser());
+			int returnVal = fc.showOpenDialog(this);
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				FileReader fr;
+				try {
+					fr = new FileReader(file);
+					waveForm.setValue(WaveForm.values()[fr.read()]);
+					for (JSlider js : sliders) {
+						int value = -fr.read() + sliderPrecision;
+						js.setValue(value);
+						System.out.println(value);
+					}
+					fr.close();
+				} catch (IOException e) {
+					System.err.println("Opening Error");
+					e.printStackTrace();
+				}
+			}
+		} else if (preset != null) {
 			sound.random(preset);
 			updateOptions();
 			updateVis();
@@ -322,55 +341,48 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 	}
 
 	public void doSound() {
-			sound.resetParams();
-			sound.wave_type = (WaveForm) waveForm.getValue();
-			sound.p_base_freq = sliders[0].getValue() / (float) sliderPrecision;
+		sound.resetParams();
+		sound.wave_type = (WaveForm) waveForm.getValue();
+		sound.p_base_freq = sliders[0].getValue() / (float) sliderPrecision;
 
-			sound.p_freq_ramp = sliders[1].getValue()
-					/ (float) (sliderPrecision / 2);
-			sound.p_freq_dramp = sliders[2].getValue()
-					/ (float) (sliderPrecision / 2);
-			sound.p_duty = sliders[3].getValue() / (float) sliderPrecision;
-			sound.p_duty_ramp = sliders[4].getValue()
-					/ (float) (sliderPrecision / 2);
+		sound.p_freq_ramp = sliders[1].getValue()
+				/ (float) (sliderPrecision / 2);
+		sound.p_freq_dramp = sliders[2].getValue()
+				/ (float) (sliderPrecision / 2);
+		sound.p_duty = sliders[3].getValue() / (float) sliderPrecision;
+		sound.p_duty_ramp = sliders[4].getValue()
+				/ (float) (sliderPrecision / 2);
 
-			sound.p_vib_strength = sliders[5].getValue()
-					/ (float) sliderPrecision;
-			sound.p_vib_speed = sliders[6].getValue() / (float) sliderPrecision;
+		sound.p_vib_strength = sliders[5].getValue() / (float) sliderPrecision;
+		sound.p_vib_speed = sliders[6].getValue() / (float) sliderPrecision;
 
-			sound.p_env_attack = sliders[7].getValue()
-					/ (float) sliderPrecision;
-			sound.p_env_sustain = sliders[8].getValue()
-					/ (float) sliderPrecision;
-			sound.p_env_decay = sliders[9].getValue() / (float) sliderPrecision;
-			sound.p_env_punch = sliders[10].getValue()
-					/ (float) sliderPrecision;
+		sound.p_env_attack = sliders[7].getValue() / (float) sliderPrecision;
+		sound.p_env_sustain = sliders[8].getValue() / (float) sliderPrecision;
+		sound.p_env_decay = sliders[9].getValue() / (float) sliderPrecision;
+		sound.p_env_punch = sliders[10].getValue() / (float) sliderPrecision;
 
-			sound.p_lpf_resonance = sliders[11].getValue()
-					/ (float) sliderPrecision;
-			sound.p_lpf_freq = sliders[12].getValue() / (float) sliderPrecision;
-			sound.p_lpf_ramp = sliders[13].getValue()
-					/ (float) (sliderPrecision / 2);
-			sound.p_hpf_freq = sliders[14].getValue() / (float) sliderPrecision;
-			sound.p_hpf_ramp = sliders[15].getValue()
-					/ (float) (sliderPrecision / 2);
+		sound.p_lpf_resonance = sliders[11].getValue()
+				/ (float) sliderPrecision;
+		sound.p_lpf_freq = sliders[12].getValue() / (float) sliderPrecision;
+		sound.p_lpf_ramp = sliders[13].getValue()
+				/ (float) (sliderPrecision / 2);
+		sound.p_hpf_freq = sliders[14].getValue() / (float) sliderPrecision;
+		sound.p_hpf_ramp = sliders[15].getValue()
+				/ (float) (sliderPrecision / 2);
 
-			sound.p_pha_offset = sliders[16].getValue()
-					/ (float) (sliderPrecision / 2);
-			sound.p_pha_ramp = sliders[17].getValue()
-					/ (float) (sliderPrecision / 2);
+		sound.p_pha_offset = sliders[16].getValue()
+				/ (float) (sliderPrecision / 2);
+		sound.p_pha_ramp = sliders[17].getValue()
+				/ (float) (sliderPrecision / 2);
 
-			sound.p_repeat_speed = sliders[18].getValue()
-					/ (float) sliderPrecision;
+		sound.p_repeat_speed = sliders[18].getValue() / (float) sliderPrecision;
 
-			sound.p_arp_mod = sliders[19].getValue() / (float) sliderPrecision;
-			sound.p_arp_speed = sliders[20].getValue()
-					/ (float) sliderPrecision;
+		sound.p_arp_mod = sliders[19].getValue() / (float) sliderPrecision;
+		sound.p_arp_speed = sliders[20].getValue() / (float) sliderPrecision;
 
-			sound.master_vol = volume.getValue() / (float) sliderPrecision;
+		sound.master_vol = volume.getValue() / (float) sliderPrecision;
 
-			
-			sound.play();
+		sound.play();
 
 	}
 
@@ -396,5 +408,28 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		updateLabels();
+	}
+}
+
+class SFPFileChooser extends FileFilter {
+	@Override
+	public String getDescription() {
+		return null;
+	}
+
+	@Override
+	public boolean accept(File f) {
+		if (f.isDirectory()) {
+			return true;
+		}
+		String ext = null;
+		String s = f.getName();
+		int i = s.lastIndexOf('.');
+
+		if (i > 0 && i < s.length() - 1) {
+			ext = s.substring(i + 1).toLowerCase();
+		}
+		System.out.println(ext);
+		return ext.equals("sfp");
 	}
 }
