@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
@@ -286,7 +287,7 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 				WaveForm wf = (WaveForm) (waveForm.getValue());
 				fw.write(wf.ordinal());
 				for (JSlider js : sliders) {
-					fw.write(js.getValue());
+					fw.write(sliderPrecision - js.getValue());
 					System.out.println(js.getValue());
 				}
 				fw.flush();
@@ -296,7 +297,24 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 				System.err.println("Saving Error");
 				e.printStackTrace();
 			}
-		} else if (preset != null) {
+		} else if(composant == "Open") {
+			System.out.println("Opening");
+			FileReader fr;
+			try {
+				fr = new FileReader("saved.sfp");
+				waveForm.setValue(WaveForm.values()[fr.read()]);
+				for (JSlider js : sliders) {
+					int value = - fr.read() + sliderPrecision;
+					js.setValue(value);
+					System.out.println(value);
+				}
+				fr.close();
+			} catch (IOException e) {
+				System.err.println("Opening Error");
+				e.printStackTrace();
+			}
+		}
+		else if (preset != null) {
 			sound.random(preset);
 			updateOptions();
 			updateVis();

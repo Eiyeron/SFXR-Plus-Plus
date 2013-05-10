@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project SFXR-Plus-Plus with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="out/SFXRPP.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="com.Eiyeron.SFXRPP.SFXRpp"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ miglayout-4.0-swing.jar miglayout-4.0.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="/media/FALCON DISK/Dev/Java/SFXR-Plus-Plus/bin"/>
+            <zipfileset dir="/media/FALCON DISK/Dev/Java/SFXR-Plus-Plus/lib" includes="miglayout-4.0-swing.jar"/>
+            <zipfileset dir="/media/FALCON DISK/Dev/Java/SFXR-Plus-Plus/lib" includes="miglayout-4.0.jar"/>
+        </jar>
+    </target>
+</project>

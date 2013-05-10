@@ -25,9 +25,7 @@ Features
 To Do
 -----
 
-- Clean and encapsulate the code to make it modular and easily usable.
 - Finish SFXR Soundbox
-- Comment the source amd make a documentation.
 - Finish the I/O system
 - Implement original SFXR's filetype I/O functions.
 
