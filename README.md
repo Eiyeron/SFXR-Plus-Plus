@@ -22,6 +22,13 @@ Features
 - The engine can export any sound to a .WAV file.
 - Free, Open Source and under a free license. Do what you want from the source (altough SFXR++ Soundbox needs MiGlayout, and so needs an indicationm of MiGlayout's license).
 
+Soundbox
+--------
+
+- Play with a fully functionnal soundbox integrated with SFXR++!
+- Save/Load any sound!
+- Uses the whole set of SFXR++ options!
+
 To Do
 -----
 
