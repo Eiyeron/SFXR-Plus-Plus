@@ -25,8 +25,6 @@ Features
 To Do
 -----
 
-- Finish SFXR Soundbox
-- Finish the I/O system
 - Implement original SFXR's filetype I/O functions.
 
 License
