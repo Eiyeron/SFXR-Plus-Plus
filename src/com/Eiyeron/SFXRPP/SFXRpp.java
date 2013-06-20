@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -311,6 +312,9 @@ public class SFXRpp extends JFrame implements ActionListener, ChangeListener {
 					e.printStackTrace();
 				}
 			}
+		}
+		else if (composant =="About") {
+			JOptionPane.showMessageDialog(this, "SFXR++ Soundbox\nby Eiyeron\nUses MiGLayout.\n2013 GPL License.");
 		} else if (composant == "Open") {
 			JFileChooser fc = new JFileChooser();
 			fc.addChoosableFileFilter(new SFPFileChooser());
